@@ -107,7 +107,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         0,                  //este valor significa que a cada "X" metros que me mova, faz novo update
                         locationListener
                 );
-
+ 
 
 
             }
