@@ -8,6 +8,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,6 +23,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -106,11 +113,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Double latitude = location.getLatitude();
                 Double longitude = location.getLongitude();
 
-
+                //limpar smepre um marcador antes de adicionar um novo. senao temos breadscrums
+                mMap.clear();
                 // Add um Marker na posicao do utilizador
                 LatLng localUtilizador = new LatLng(latitude, longitude);
                 mMap.addMarker(new MarkerOptions().position(localUtilizador).title("Minha Localizacao"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(localUtilizador,15));
+
+            /*
+            * ##GEOCODING:
+            * processo de transformar um endereco ou descricao
+            * de um local em latitude/longitude
+            *
+            * ##REVERSE GEOCODING
+            * processo de transformar latitude/longitude em um endereco
+            * */
+
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault() );//location default usa localizacao do user
+
+                try {
+                    //List<Address> listaEndereco = geocoder.getFromLocation(latitude,longitude,1);
+                    String stringEndereco = "R. do Curral, 4610-156 Margaride (Santa Eulália)";
+                    List<Address> listaEndereco = geocoder.getFromLocationName(stringEndereco,1);
+                    if(listaEndereco != null && listaEndereco.size()>0){
+                        Address endereco = listaEndereco.get(0); // primeiro encontrado
+
+
+                        /* ISTO PORQUE ESCREVI LOG.D e fui buscar aqui no log as informacoes de "endereco"
+                        * onLocationChanged:
+                        * Address[
+                        * addressLines=[
+                        * 0:"
+                        * Av. Dr. Leonardo Coimbra 312,
+                        *  4610-105 Felgueiras,
+                        *  Portugal
+                        * "],
+                        * feature=312,
+                        * admin=Porto,
+                        * sub-admin=null,
+                        * locality=Felgueiras,
+                        * thoroughfare=
+                        * Avenida Doutor Leonardo Coimbra,
+                        * postalCode=4610-105,
+                        * countryCode=PT,
+                        * countryName=Portugal,
+                        * hasLatitude=true,
+                        * latitude=41.364060099999996,
+                        * hasLongitude=true,
+                        * longitude=-8.1996658,
+                        * phone=null,
+                        * url=null,
+                        * extras=null]
+                        * */
+
+                        /*GeoCode*/
+                        //Log.d("local","onLocationChanged: " + endereco.getAddressLine(0));
+
+                        /*REVERSE GeoCode*/
+                        Log.d("local","onLocationChanged: " + endereco.toString());
+
+                    }
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
 
 
             }
