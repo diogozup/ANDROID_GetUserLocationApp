@@ -11,7 +11,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,6 +46,72 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                Log.d("Localizacao", "onLocationChanged" + location.toString());
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+        //CODIGO QUE PERMITE OBTER LOCALIZACAO DO USER
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,   //user GPS como Location provider
+                        0,                     //0 milisec significa que nao quero receber periodicamente
+                        0,                  //este valor significa que a cada "X" metros que me mova, faz novo update
+                        locationListener
+                );
+            }
+        }
+
+
+
+
+
+
+
+
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    //----------------------------------------------------------- on Map Ready
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        //Get objecto responsael por gerenciar a localizacao do user
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.d("Localizacao", "onLocationChanged" + location.toString());
+
+                Double latitude = location.getLatitude();
+                Double longitude = location.getLongitude();
+
+
+                // Add um Marker na posicao do utilizador
+                LatLng localUtilizador = new LatLng(latitude, longitude);
+                mMap.addMarker(new MarkerOptions().position(localUtilizador).title("Minha Localizacao"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(localUtilizador,15));
+
 
             }
 
@@ -63,24 +131,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
 
+        //CODIGO QUE PERMITE OBTER LOCALIZACAO DO USER
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,   //user GPS como Location provider
+                        0,                     //0 milisec significa que nao quero receber periodicamente
+                        0,                  //este valor significa que a cada "X" metros que me mova, faz novo update
+                        locationListener
+                );
+            }
+        }
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
-    //----------------------------------------------------------- on Map Ready
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //----------------------------------------------------------------------------- onRequestePermissionResult
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -98,16 +180,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                  * 4) Localizacao listener (para recebermos os updates de localizcao)
                  * */
 
-                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
+                //CODIGO QUE PERMITE OBTER LOCALIZACAO DO USER
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,   //user GPS como Location provider
+                                0,                     //0 milisec significa que nao quero receber periodicamente
+                                0,                  //este valor significa que a cada "X" metros que me mova, faz novo update
+                                locationListener
+                        );
+                    }
                 }
-                locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER,   //user GPS como Location provider
-                        0,                     //0 milisec significa que nao quero receber periodicamente
-                        0,                  //este valor significa que a cada "X" metros que me mova, faz novo update
-                        locationListener
-                );
- 
+
+
 
 
             }
