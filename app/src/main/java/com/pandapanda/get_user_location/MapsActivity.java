@@ -132,9 +132,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault() );//location default usa localizacao do user
 
                 try {
-                    //List<Address> listaEndereco = geocoder.getFromLocation(latitude,longitude,1);
-                    String stringEndereco = "R. do Curral, 4610-156 Margaride (Santa Eulália)";
-                    List<Address> listaEndereco = geocoder.getFromLocationName(stringEndereco,1);
+                    List<Address> listaEndereco = geocoder.getFromLocation(latitude,longitude,1);
+
+                    /*-- REVERSE GEOCODER-- */
+                    //String stringEndereco = "R. do Curral, 4610-156 Margaride (Santa Eulália)";
+                    //List<Address> listaEndereco = geocoder.getFromLocationName(stringEndereco,1);
+                    /*-- REVERSE GEOCODER-- */
+
                     if(listaEndereco != null && listaEndereco.size()>0){
                         Address endereco = listaEndereco.get(0); // primeiro encontrado
 
@@ -167,10 +171,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         * */
 
                         /*GeoCode*/
-                        //Log.d("local","onLocationChanged: " + endereco.getAddressLine(0));
+                        Log.d("local","onLocationChanged: " + endereco.getAddressLine(0));
 
                         /*REVERSE GeoCode*/
-                        Log.d("local","onLocationChanged: " + endereco.toString());
+                        // Log.d("local","onLocationChanged: " + endereco.toString());
 
                     }
 
