@@ -77,7 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,   //user GPS como Location provider
-                        0,                     //0 milisec significa que nao quero receber periodicamente
+                        10000,                     //0 milisec significa que nao quero receber periodicamente mas sim a toda hora
                         0,                  //este valor significa que a cada "X" metros que me mova, faz novo update
                         locationListener
                 );
